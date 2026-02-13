@@ -58,11 +58,12 @@ Dataset size: 1600+ records
 ---
 
 ## Observations
-
-Logistic Regression - Logistic Regression provided a good baseline not performed best.
-Decision Tree - Decision Tree performed well but may overfit with dataset.
-KNN - KNN showed strong recall when compared to other models recall.
-Navie Bayes - Naive Bayes had the lowest performance due to feature independence assumptions with datasets.
-Random Forest - Random Forest achieved the best performance across all metrics best model for this dataset.
-XGBoost - XGBoost also performed strongly and was a close second.
+| ML Model Name | Observation about model performance|
+|------|---------|
+| Logistic Regression | Provided a good baseline not performed best |
+| Decision Tree | Performed well but may overfit with dataset | 
+| KNN |KNN showed Strong recall when compared to other models recall |
+| Naive Bayes | The lowest performance due to feature independence assumptions with datasets | 
+| Random Forest | Achieved the best performance across all metrics best model for this dataset |
+| XGBoost | Performed strongly and was a close second |
 
