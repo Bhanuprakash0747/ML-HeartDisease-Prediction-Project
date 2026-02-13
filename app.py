@@ -18,8 +18,8 @@ st.set_page_config(
 )
 
 # ---------------- HEADER ----------------
-st.title("❤️ Heart Disease Prediction Dashboard")
-st.markdown("### End-to-End Machine Learning Project")
+st.title("BITS ML ASSIGNEMNT 2 - ❤️ Heart Disease Prediction Dashboard")
+st.markdown("### End-to-End Machine Learning Project by 2025AA05782@wilp.bits-pilani.ac.in")
 
 st.markdown(
 """
