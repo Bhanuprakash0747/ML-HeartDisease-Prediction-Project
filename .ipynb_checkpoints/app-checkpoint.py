@@ -79,8 +79,12 @@ if uploaded_file:
     y = df["target"]
 
     # ----------- SCALING -----------
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    # scaler = StandardScaler()
+    # X_scaled = scaler.fit_transform(X)
+
+    scaler = joblib.load("model/scaler.pkl")
+    X_scaled = scaler.transform(X)
+
 
     # ----------- LOAD MODEL -----------
     model = joblib.load(f"model/{model_name}.pkl")
