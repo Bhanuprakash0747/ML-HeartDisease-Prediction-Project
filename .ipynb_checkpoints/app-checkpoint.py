@@ -42,7 +42,7 @@ sample_csv = sample_df.to_csv(index=False).encode("utf-8")
 st.sidebar.download_button(
     "Download Sample CSV",
     sample_csv,
-    "sample_heart_data.csv",
+    "heartdisease_dataset.csv",
     "text/csv"
 )
 
