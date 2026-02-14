@@ -12,7 +12,6 @@ from sklearn.metrics import (
     confusion_matrix, classification_report
 )
 
-# ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="Heart Disease ML App",
                    page_icon="❤️",
                    layout="wide")
@@ -20,7 +19,6 @@ st.set_page_config(page_title="Heart Disease ML App",
 st.title("❤️ Heart Disease Prediction Dashboard")
 st.markdown("### End-to-End Machine Learning Project by 2025AA05782@wilp.bits-pilani.ac.in")
 
-# ---------------- SIDEBAR ----------------
 st.sidebar.title("⚙️ Settings")
 
 model_name = st.sidebar.selectbox(
@@ -35,7 +33,6 @@ uploaded_file = st.sidebar.file_uploader(
     type=["csv"]
 )
 
-# ---------------- SAMPLE DATA DOWNLOAD ----------------
 st.sidebar.markdown("### 📥 Download Sample Dataset")
 
 sample_df = pd.read_csv("heartdisease_dataset.csv") 
@@ -49,7 +46,6 @@ st.sidebar.download_button(
     "text/csv"
 )
 
-# ---------------- MODEL INFO ----------------
 model_info = {
     "Logistic Regression":"Baseline linear model.",
     "Decision Tree":"Easy to interpret.",
@@ -61,7 +57,6 @@ model_info = {
 
 st.sidebar.info(model_info[model_name])
 
-# ---------------- MAIN ----------------
 if uploaded_file:
 
     df = pd.read_csv(uploaded_file)
@@ -69,30 +64,21 @@ if uploaded_file:
     st.subheader("📊 Dataset Preview")
     st.dataframe(df.head())
 
-    # ----------- CLEANING (RAW DATA SUPPORT) -----------
     df.replace("?", np.nan, inplace=True)
     df = df.apply(pd.to_numeric, errors='coerce')
     df.dropna(inplace=True)
 
-    # ----------- SPLIT -----------
     X = df.drop("target", axis=1)
     y = df["target"]
-
-    # ----------- SCALING -----------
-    # scaler = StandardScaler()
-    # X_scaled = scaler.fit_transform(X)
 
     scaler = joblib.load("model/scaler.pkl")
     X_scaled = scaler.transform(X)
 
-
-    # ----------- LOAD MODEL -----------
     model = joblib.load(f"model/{model_name}.pkl")
 
     y_pred = model.predict(X_scaled)
     y_prob = model.predict_proba(X_scaled)[:,1]
 
-    # ---------------- METRICS ----------------
     st.subheader("📈 Performance Metrics")
 
     acc = accuracy_score(y,y_pred)
@@ -112,7 +98,6 @@ if uploaded_file:
     c5.metric("Recall", f"{rec:.3f}")
     c6.metric("MCC", f"{mcc:.3f}")
 
-    # ---------------- CONFUSION MATRIX ----------------
     st.subheader("🔥 Confusion Matrix")
 
     cm = confusion_matrix(y,y_pred)
@@ -123,11 +108,9 @@ if uploaded_file:
                 yticklabels=["No Disease","Disease"])
     st.pyplot(fig)
 
-    # ---------------- REPORT ----------------
     st.subheader("📄 Classification Report")
     st.text(classification_report(y,y_pred))
 
-    # ---------------- DOWNLOAD PREDICTIONS ----------------
     st.subheader("⬇️ Download Predictions")
 
     df["Prediction"] = y_pred
@@ -143,6 +126,5 @@ if uploaded_file:
 else:
     st.info("⬅️ Upload a CSV to begin")
 
-# ---------------- FOOTER ----------------
 st.markdown("---")
-st.markdown("Built with ❤️ using Streamlit")
+st.markdown("Built with ❤️ using Streamlit by Bhanu Prakash Selvam")
