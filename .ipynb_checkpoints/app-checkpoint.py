@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score,
     f1_score, matthews_corrcoef, roc_auc_score,
@@ -11,22 +13,12 @@ from sklearn.metrics import (
 )
 
 # ---------------- PAGE CONFIG ----------------
-st.set_page_config(
-    page_title="Heart Disease ML App",
-    page_icon="❤️",
-    layout="wide"
-)
+st.set_page_config(page_title="Heart Disease ML App",
+                   page_icon="❤️",
+                   layout="wide")
 
-# ---------------- HEADER ----------------
-st.title("BITS ML ASSIGNEMNT 2 - ❤️ Heart Disease Prediction Dashboard")
+st.title("❤️ Heart Disease Prediction Dashboard")
 st.markdown("### End-to-End Machine Learning Project by 2025AA05782@wilp.bits-pilani.ac.in")
-
-st.markdown(
-"""
-This app predicts **heart disease risk** using multiple ML models.
-Upload a dataset to evaluate model performance.
-"""
-)
 
 # ---------------- SIDEBAR ----------------
 st.sidebar.title("⚙️ Settings")
@@ -43,14 +35,28 @@ uploaded_file = st.sidebar.file_uploader(
     type=["csv"]
 )
 
-# ---------------- MODEL DESCRIPTIONS ----------------
+# ---------------- SAMPLE DATA DOWNLOAD ----------------
+st.sidebar.markdown("### 📥 Download Sample Dataset")
+
+sample_df = pd.read_csv("heartdisease_dataset.csv") 
+
+sample_csv = sample_df.to_csv(index=False).encode("utf-8")
+
+st.sidebar.download_button(
+    "Download Sample CSV",
+    sample_csv,
+    "sample_heart_data.csv",
+    "text/csv"
+)
+
+# ---------------- MODEL INFO ----------------
 model_info = {
-    "Logistic Regression":"Baseline linear model for binary classification.",
-    "Decision Tree":"Tree-based model, easy to interpret.",
-    "KNN":"Distance-based model using nearest neighbors.",
-    "Naive Bayes":"Probabilistic model assuming independence.",
-    "Random Forest":"Ensemble of trees, robust and accurate.",
-    "XGBoost":"Advanced boosting algorithm with high performance."
+    "Logistic Regression":"Baseline linear model.",
+    "Decision Tree":"Easy to interpret.",
+    "KNN":"Nearest neighbor based.",
+    "Naive Bayes":"Probabilistic model.",
+    "Random Forest":"Robust ensemble model.",
+    "XGBoost":"High-performance boosting."
 }
 
 st.sidebar.info(model_info[model_name])
@@ -63,14 +69,24 @@ if uploaded_file:
     st.subheader("📊 Dataset Preview")
     st.dataframe(df.head())
 
-    # Load model
-    model = joblib.load(f"model/{model_name}.pkl")
+    # ----------- CLEANING (RAW DATA SUPPORT) -----------
+    df.replace("?", np.nan, inplace=True)
+    df = df.apply(pd.to_numeric, errors='coerce')
+    df.dropna(inplace=True)
 
+    # ----------- SPLIT -----------
     X = df.drop("target", axis=1)
     y = df["target"]
 
-    y_pred = model.predict(X)
-    y_prob = model.predict_proba(X)[:,1]
+    # ----------- SCALING -----------
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # ----------- LOAD MODEL -----------
+    model = joblib.load(f"model/{model_name}.pkl")
+
+    y_pred = model.predict(X_scaled)
+    y_prob = model.predict_proba(X_scaled)[:,1]
 
     # ---------------- METRICS ----------------
     st.subheader("📈 Performance Metrics")
@@ -92,7 +108,7 @@ if uploaded_file:
     c5.metric("Recall", f"{rec:.3f}")
     c6.metric("MCC", f"{mcc:.3f}")
 
-    # ---------------- CONFUSION MATRIX HEATMAP ----------------
+    # ---------------- CONFUSION MATRIX ----------------
     st.subheader("🔥 Confusion Matrix")
 
     cm = confusion_matrix(y,y_pred)
@@ -101,22 +117,17 @@ if uploaded_file:
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
                 xticklabels=["No Disease","Disease"],
                 yticklabels=["No Disease","Disease"])
-    plt.xlabel("Predicted")
-    plt.ylabel("Actual")
-
     st.pyplot(fig)
 
     # ---------------- REPORT ----------------
     st.subheader("📄 Classification Report")
     st.text(classification_report(y,y_pred))
 
-    # ---------------- DOWNLOAD ----------------
+    # ---------------- DOWNLOAD PREDICTIONS ----------------
     st.subheader("⬇️ Download Predictions")
 
-    output = df.copy()
-    output["Prediction"] = y_pred
-
-    csv = output.to_csv(index=False).encode("utf-8")
+    df["Prediction"] = y_pred
+    csv = df.to_csv(index=False).encode("utf-8")
 
     st.download_button(
         "Download Results CSV",
@@ -126,10 +137,8 @@ if uploaded_file:
     )
 
 else:
-    st.info("⬅️ Upload a CSV file from the sidebar to begin")
+    st.info("⬅️ Upload a CSV to begin")
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
-st.markdown(
-"Built with ❤️ using Streamlit & Scikit-learn | ML Portfolio Project"
-)
+st.markdown("Built with ❤️ using Streamlit")
