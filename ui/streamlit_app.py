@@ -4,8 +4,8 @@ import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
-from services.prediction_service import PredictionService
 import os
+import services
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (
@@ -13,6 +13,8 @@ from sklearn.metrics import (
     f1_score, matthews_corrcoef, roc_auc_score,
     confusion_matrix, classification_report
 )
+
+from services.prediction_service import PredictionService
 
 st.set_page_config(page_title="Heart Disease ML App",
                    page_icon="❤️",
