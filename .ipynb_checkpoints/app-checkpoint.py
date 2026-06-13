@@ -47,11 +47,11 @@ st.sidebar.download_button(
 )
 
 model_info = {
-    "Logistic Regression":"Baseline linear model.",
+    "Logistic Regression":"Baseline linear models.",
     "Decision Tree":"Easy to interpret.",
     "KNN":"Nearest neighbor based.",
-    "Naive Bayes":"Probabilistic model.",
-    "Random Forest":"Robust ensemble model.",
+    "Naive Bayes":"Probabilistic models.",
+    "Random Forest":"Robust ensemble models.",
     "XGBoost":"High-performance boosting."
 }
 
@@ -71,10 +71,10 @@ if uploaded_file:
     X = df.drop("target", axis=1)
     y = df["target"]
 
-    scaler = joblib.load("model/scaler.pkl")
+    scaler = joblib.load("models/scaler.pkl")
     X_scaled = scaler.transform(X)
 
-    model = joblib.load(f"model/{model_name}.pkl")
+    model = joblib.load(f"models/{model_name}.pkl")
 
     y_pred = model.predict(X_scaled)
     y_prob = model.predict_proba(X_scaled)[:,1]

@@ -4,6 +4,8 @@ import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
+from services.prediction_service import PredictionService
+import os
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (
@@ -17,7 +19,7 @@ st.set_page_config(page_title="Heart Disease ML App",
                    layout="wide")
 
 st.title("❤️ Heart Disease Prediction Dashboard")
-st.markdown("### End-to-End Machine Learning Project by 2025AA05782@wilp.bits-pilani.ac.in")
+st.markdown("### End-to-End Machine Learning Project")
 
 st.sidebar.title("⚙️ Settings")
 
@@ -35,7 +37,7 @@ uploaded_file = st.sidebar.file_uploader(
 
 st.sidebar.markdown("### 📥 Download Sample Dataset")
 
-sample_df = pd.read_csv("heartdisease_dataset.csv") 
+sample_df = pd.read_csv("data/heartdisease_dataset.csv")
 
 sample_csv = sample_df.to_csv(index=False).encode("utf-8")
 
@@ -47,11 +49,11 @@ st.sidebar.download_button(
 )
 
 model_info = {
-    "Logistic Regression":"Baseline linear model.",
+    "Logistic Regression":"Baseline linear models.",
     "Decision Tree":"Easy to interpret.",
     "KNN":"Nearest neighbor based.",
-    "Naive Bayes":"Probabilistic model.",
-    "Random Forest":"Robust ensemble model.",
+    "Naive Bayes":"Probabilistic models.",
+    "Random Forest":"Robust ensemble models.",
     "XGBoost":"High-performance boosting."
 }
 
@@ -71,13 +73,12 @@ if uploaded_file:
     X = df.drop("target", axis=1)
     y = df["target"]
 
-    scaler = joblib.load("model/scaler.pkl")
-    X_scaled = scaler.transform(X)
+    service = PredictionService()
 
-    model = joblib.load(f"model/{model_name}.pkl")
-
-    y_pred = model.predict(X_scaled)
-    y_prob = model.predict_proba(X_scaled)[:,1]
+    y_pred, y_prob = service.predict(
+        X,
+        model_name
+    )
 
     st.subheader("📈 Performance Metrics")
 
@@ -125,6 +126,3 @@ if uploaded_file:
 
 else:
     st.info("⬅️ Upload a CSV to begin")
-
-st.markdown("---")
-st.markdown("Built with ❤️ using Streamlit by Bhanu Prakash Selvam")
