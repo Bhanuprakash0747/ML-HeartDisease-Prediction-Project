@@ -1,5 +1,4 @@
 import joblib
-from utils.logger import logger
 
 class PredictionService:
 
