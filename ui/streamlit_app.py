@@ -12,6 +12,11 @@ from sklearn.metrics import (
     f1_score, matthews_corrcoef, roc_auc_score,
     confusion_matrix, classification_report
 )
+import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT_DIR))
 from services.prediction_service import PredictionService
 
 st.set_page_config(page_title="Heart Disease ML App",
