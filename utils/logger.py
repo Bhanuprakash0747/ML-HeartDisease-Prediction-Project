@@ -1,8 +1,6 @@
 import logging
-from pathlib import Path
 
 from config import ROOT_DIR
-
 
 LOG_DIR = ROOT_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)

@@ -1,7 +1,6 @@
 from services.model_service import ModelService
 from utils.logger import get_logger
 
-
 logger = get_logger(__name__)
 
 
