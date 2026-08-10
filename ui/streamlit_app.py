@@ -1,12 +1,8 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
-import os
 
-from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score,
     f1_score, matthews_corrcoef, roc_auc_score,
@@ -18,6 +14,7 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 from services.prediction_service import PredictionService
+from utils.preprocessing import preprocess
 
 st.set_page_config(page_title="Heart Disease ML App",
                    page_icon="❤️",
@@ -71,9 +68,7 @@ if uploaded_file:
     st.subheader("📊 Dataset Preview")
     st.dataframe(df.head())
 
-    df.replace("?", np.nan, inplace=True)
-    df = df.apply(pd.to_numeric, errors='coerce')
-    df.dropna(inplace=True)
+    df = preprocess(df)
 
     X = df.drop("target", axis=1)
     y = df["target"]
