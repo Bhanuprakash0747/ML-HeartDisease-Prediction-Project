@@ -6,7 +6,6 @@ from config import FEATURE_COLUMNS, PRODUCTION_MODEL
 from services.prediction_service import PredictionService
 from utils.logger import get_logger
 
-
 logger = get_logger(__name__)
 
 app = FastAPI(
